@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-export default function Table() {
+export default function Table({ columns }) {
   return (
     <div className="flex flex-col p-5">
       <div className="flex justify-end items-center ">
@@ -20,9 +20,12 @@ export default function Table() {
       <table className="min-w-full mt-5">
         <thead className="bg-gray-200">
           <tr className="[&>th]:bg-blue-800 [&>th]:border-0 text-white">
-            <th className="border border-gray-300 px-4 py-2">Titulo</th>
-            <th className="border border-gray-300 px-4 py-2">Director</th>
-            <th className="border border-gray-300 px-4 py-2">Productor</th>
+            {columns.map((col) => (
+              <th key={col.field} className="border border-gray-300 px-4 py-2">{col.title}</th>
+            ))}
+            {/* <th className="border border-gray-300 px-4 py-2">Titulo</th> */}
+            {/* <th className="border border-gray-300 px-4 py-2">Director</th> */}
+            {/* <th className="border border-gray-300 px-4 py-2">Productor</th> */}
           </tr>
         </thead>
         <tbody>
