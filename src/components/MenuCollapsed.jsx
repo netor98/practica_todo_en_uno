@@ -6,7 +6,7 @@ const menuItems = [
   { to: "/movies", icon: <Film color="white" />, text: "Peliculas" },
   { to: "/planets", icon: <Earth color="white" />, text: "Planetas" },
   { to: "/species", icon: <PersonStanding color="white" />, text: "Especies" },
-  { to: "/airships", icon: <PlaneLanding color="white" />, text: "Naves" },
+  { to: "/spaceships", icon: <PlaneLanding color="white" />, text: "Naves" },
   { to: "/vehicles", icon: <Car color="white" />, text: "Vehiculos" },
   { to: "/characters", icon: <Users color="white" />, text: "Personajes" },
 ];

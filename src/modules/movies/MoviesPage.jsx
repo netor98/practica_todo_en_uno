@@ -10,6 +10,6 @@ const moviesColumns = [
 export default function MoviesPage() {
   return (
     // <App name="Películas" />
-    <ModuleLayout columns={moviesColumns} title="Películas" />
+    <ModuleLayout columns={moviesColumns} title="Películas" apiEndpoint="api/movies" />
   )
 }
