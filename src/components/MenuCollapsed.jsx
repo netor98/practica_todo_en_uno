@@ -1,5 +1,6 @@
 import { ArrowRightToLine, ArrowLeftToLine, Car, Earth, PlaneLanding, Users, PersonStanding, Film } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import MenuItem from "./MenuItem";
 
 const menuItems = [
@@ -12,7 +13,19 @@ const menuItems = [
 ];
 
 export default function MenuCollapsed() {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const stateMenu = () => {
+    const localStorageMenu = localStorage.getItem('menu-collapsed');
+    return localStorageMenu ? JSON.parse(localStorageMenu) : true;
+  }
+  const [isCollapsed, setIsCollapsed] = useState(stateMenu());
+
+  useEffect(() => {
+    localStorage.setItem("menu-collapsed", isCollapsed);
+  }, [isCollapsed]);
+
+
+
 
   return (
     <div className={`h-screen bg-black text-white flex my-5 ml-5

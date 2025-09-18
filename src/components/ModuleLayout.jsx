@@ -10,8 +10,7 @@ export function ModuleLayout({ columns, title, apiEndpoint }) {
     fetch(`${api}/${apiEndpoint}`)
       .then((res) => res.json())
       .then(data => setData(data))
-    console.log(apiEndpoint)
-  })
+  }, [])
 
 
   return (
