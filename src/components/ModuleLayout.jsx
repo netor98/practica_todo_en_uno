@@ -11,7 +11,15 @@ export function ModuleLayout({ columns, title, apiEndpoint }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
+
   useEffect(() => {
+    console.log("condicion")
+    if (totalItems > 0 && totalItems >= totalItems) setCurrentPage(1);
+  }, [itemsPerPage, totalItems])
+
+  useEffect(() => {
+
+
     fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
       .then((res) => res.json())
       .then(response => {

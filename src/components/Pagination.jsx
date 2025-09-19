@@ -6,15 +6,18 @@ export function Pagination({ itemsPerPage, setCurrentPage, currentPage, totalPag
     let pages = [];
     for (let i = 1; i <= totalPages; i++) {
       if (i === currentPage) {
-        pages.push(<p key={i} className="px-2 py-2 bg-blue-500 text-white rounded-full">{i}</p>);
+        pages.push(<p key={i} className="px-2 py-2 bg-blue-500 text-white ">{i}</p>);
         continue;
       }
-      pages.push(<p className="px-2 py-2 hover:bg-blue-300" onClick={() => handlePageChange(i)}>{i}</p>);
+      pages.push(
+        <p className="px-2 py-2 hover:bg-blue-300 cursor-pointer" onClick={() => handlePageChange(i)}>{i}</p>
+      );
     }
     return pages;
   }
 
   const handlePageChange = (newPage) => {
+    if (newPage == currentPage) return;
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
@@ -24,11 +27,16 @@ export function Pagination({ itemsPerPage, setCurrentPage, currentPage, totalPag
     <div className="flex items-center justify-center">
       <div className="flex justify-center bg-gray-200 w-fit px-4 rounded-full gap-1 my-5">
         <div className="flex items-center gap-1">
-          <button className="h-full cursor-pointer">
-            <SkipBackIcon className="text-black" size={22} />
+
+          <button className="h-full cursor-pointer disabled:cursor-default" disabled={currentPage === 1 ? true : false}
+            onClick={() => handlePageChange(1)}>
+            <SkipBackIcon className={` ${currentPage === 1 ? 'text-gray-400' : 'text-black'}`} size={22} />
+
           </button>
-          <button className="hover:bg-blue-500 h-full ">
-            <ChevronLeft className="text-black" />
+
+          <button className="h-full cursor-pointer disabled:cursor-not-allowed" disabled={currentPage === 1 ? true : false}
+            onClick={() => handlePageChange(currentPage - 1)}>
+            <ChevronLeft className={` ${currentPage === 1 ? 'text-gray-400' : 'text-black'}`} />
           </button>
         </div>
 
@@ -38,11 +46,18 @@ export function Pagination({ itemsPerPage, setCurrentPage, currentPage, totalPag
         </div>
 
         <div className="flex items-center gap-1">
-          <button className="hover:bg-blue-500 h-full ">
-            <ChevronRight className="text-black" />
+          <button className="h-full cursor-pointer disabled:cursor-not-allowed"
+            disabled={currentPage === totalPages ? true : false}
+            onClick={() => handlePageChange(currentPage + 1)}
+          >
+            <ChevronRight className={`${currentPage === totalPages ? 'text-gray-400' : 'text-black'}`} />
           </button>
-          <button className="hover:bg-blue-500 h-full ">
-            <SkipForwardIcon className="text-black" size={22} />
+
+          <button className="h-full cursor-pointer disabled:cursor-not-allowed"
+            disabled={currentPage === totalPages ? true : false}
+            onClick={() => handlePageChange(totalPages)}
+          >
+            <SkipForwardIcon className={`${currentPage === totalPages ? 'text-gray-400' : 'text-black'}`} size={22} />
           </button>
         </div>
       </div>
@@ -57,6 +72,6 @@ export function Pagination({ itemsPerPage, setCurrentPage, currentPage, totalPag
         </select>
       </div>
 
-    </div>
+    </div >
   )
 }
