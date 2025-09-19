@@ -1,7 +1,11 @@
 import { Eye, PencilLine, Search, Trash } from "lucide-react";
+import { useState } from "react";
 import { Pagination } from "./Pagination";
+import { ModalDelete } from "./ModalDelete";
 
 export default function Table({ columns, data }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="flex flex-col p-5">
       <div className="flex justify-end items-center ">
@@ -46,7 +50,9 @@ export default function Table({ columns, data }) {
                   hover:bg-blue-600 hover:text-white transition-colors cursor-pointer">
                     <PencilLine size={16} />
                   </button>
-                  <button className="bg-gray-200 px-1 py-1 text-red-500 rounded-lg text-sm
+
+                  <button onClick={() => setIsModalOpen(true)}
+                    className="bg-gray-200 px-1 py-1 text-red-500 rounded-lg text-sm
                   hover:bg-red-600 hover:text-white transition-colors cursor-pointer">
                     <Trash size={16} />
                   </button>
@@ -58,6 +64,7 @@ export default function Table({ columns, data }) {
           ))}
         </tbody>
       </table>
+      <ModalDelete isOpen={isModalOpen} onClose={(value) => setIsModalOpen(!value)} />
     </div >
   )
 }
