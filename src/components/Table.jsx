@@ -58,9 +58,6 @@ export default function Table({ columns, data }) {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-end">
-        <Pagination />
-      </div>
     </div >
   )
 }

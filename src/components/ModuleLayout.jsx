@@ -1,17 +1,26 @@
 import { useEffect } from "react"
 import MenuCollapsed from "./MenuCollapsed"
 import Table from "./Table"
+import { Pagination } from "./Pagination"
 import { useState } from "react"
 
 export function ModuleLayout({ columns, title, apiEndpoint }) {
   const api = 'http://localhost:3000'
   const [data, setData] = useState([])
-  useEffect(() => {
-    fetch(`${api}/${apiEndpoint}`)
-      .then((res) => res.json())
-      .then(data => setData(data))
-  }, [])
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
+  useEffect(() => {
+    fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
+      .then((res) => res.json())
+      .then(response => {
+        setData(response.data)
+        setTotalItems(response.itemsCount)
+      })
+  }, [itemsPerPage, currentPage, apiEndpoint])
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
     <div className="flex">
@@ -27,7 +36,12 @@ export function ModuleLayout({ columns, title, apiEndpoint }) {
             </button>
           </div>
 
-          <Table columns={columns} data={data} />
+          <Table columns={columns} data={data} setItemsPerPage={setItemsPerPage} />
+
+          <div className="flex justify-end">
+            <Pagination itemsPerPage={setItemsPerPage} totalPages={totalPages}
+              currentPage={currentPage} setCurrentPage={setCurrentPage} />
+          </div>
         </div>
       </div>
     </div>
