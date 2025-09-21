@@ -8,16 +8,16 @@ export function ModalDelete({ isOpen, onClose, onConfirm, itemName }) {
         <h3 className="font-bold text-lg mb-6">¿Estás seguro de que deseas eliminar este registro?</h3>
         <div className="flex justify-center space-x-4">
           <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Sí
+          </button>
+          <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
           >
-            Cancelar
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Eliminar
+            No
           </button>
         </div>
       </div>

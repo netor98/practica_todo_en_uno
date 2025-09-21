@@ -3,6 +3,7 @@ import MenuCollapsed from "./MenuCollapsed"
 import Table from "./Table"
 import { Pagination } from "./Pagination"
 import { useState } from "react"
+import Searcher from "./Searcher"
 
 export function ModuleLayout({ columns, title, apiEndpoint }) {
   const api = 'http://localhost:3000'
@@ -44,7 +45,10 @@ export function ModuleLayout({ columns, title, apiEndpoint }) {
             </button>
           </div>
 
-          <Table columns={columns} data={data} setItemsPerPage={setItemsPerPage} />
+          <div className="">
+            <Searcher />
+            <Table columns={columns} data={data} setItemsPerPage={setItemsPerPage} />
+          </div>
 
           <div className="flex justify-end">
             <Pagination itemsPerPage={setItemsPerPage} totalPages={totalPages}
