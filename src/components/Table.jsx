@@ -2,10 +2,19 @@ import { Eye, PencilLine, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { ModalDelete } from './ModalDelete';
 import OffCanvas from './OffCanvas';
+import MovieForm from '../modules/movies/MovieForm';
+import PlanetsForm from '../modules/planets/PlanetsForm';
+import { useEffect } from 'react';
 
-export default function Table({ columns, data }) {
+export default function Table({ columns, data, module }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [mode, setMode] = useState('view');
+
+  useEffect(() => {
+    console.log('module:', module);
+  }, [module]);
 
   return (
     <div className="flex flex-col">
@@ -39,6 +48,11 @@ export default function Table({ columns, data }) {
                     <Eye size={18} />
                   </button>
                   <button
+                    onClick={() => {
+                      setMode('edit');
+                      setIsOffCanvasOpen(true);
+                      console.log('a');
+                    }}
                     className="bg-gray-200 px-1 py-1 text-blue-500 rounded-lg text-sm
                   hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"
                   >
@@ -59,7 +73,9 @@ export default function Table({ columns, data }) {
         </tbody>
       </table>
       <ModalDelete isOpen={isModalOpen} onClose={(value) => setIsModalOpen(!value)} />
-      <OffCanvas isOpen={isOffCanvasOpen} onClose={() => setIsOffCanvasOpen(false)} />
+      <OffCanvas isOpen={isOffCanvasOpen} onClose={() => setIsOffCanvasOpen(false)}>
+        {module === 'movies' && <MovieForm mode={mode} />}
+      </OffCanvas>
     </div>
   );
 }
