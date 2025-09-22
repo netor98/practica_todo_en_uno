@@ -3,23 +3,13 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'formik';
 
+const BLANK_MOVIE = {
+  title: '',
+  director: '',
+  producer: '',
+};
+
 export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' }) {
-  const [formData, setFormData] = useState(initialData);
-
-  useEffect(() => {
-    setFormData(initialData);
-  }, [initialData]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    onSubmit(formData);
-  };
-
   const MovieSchema = Yup.object().shape({
     title: Yup.string().required('El título es obligatorio'),
     director: Yup.string().required('El director es obligatorio'),
@@ -28,13 +18,13 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
 
   return (
     <Formik
-      initialValues={formData}
+      initialValues={{ ...BLANK_MOVIE, ...initialData }}
       enableReinitialize
       onSubmit={onSubmit}
       validationSchema={MovieSchema}
     >
       {({ handleSubmit }) => (
-        <form className="space-y-4" onSubmit={handleFormSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
               {mode === 'view'
@@ -57,24 +47,32 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Director</label>
-            <input
+            <Field
               type="text"
               name="director"
-              defaultValue={initialData.director || ''}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
+            <ErrorMessage
+              name="director"
+              component="div"
+              className="text-red-500 text-sm"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Productor</label>
-            <input
+            <Field
               type="text"
               name="producer"
-              defaultValue={initialData.producer || ''}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
+            />
+            <ErrorMessage
+              name="producer"
+              component="div"
+              className="text-red-500 text-sm"
             />
           </div>
           <div className="flex justify-end">

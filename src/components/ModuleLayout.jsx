@@ -32,7 +32,6 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
       setSelectedItem(BLANK_MOVIE);
     }
     setIsOffCanvasOpen(true);
-    console.log('mode:', mode);
   };
 
   const handleClose = () => {
@@ -41,6 +40,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   };
 
   const handleSubmit = (item) => {
+    console.log('Submitting item:', item);
     addMovie(item).then(() => {
       handleClose();
       fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
@@ -99,11 +99,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
 
           <OffCanvas isOpen={isOffCanvasOpen} onClose={handleClose}>
             {module === 'movies' && (
-              <MovieForm
-                mode={mode}
-                initialData={selectedItem}
-                onSubmit={(item) => handleSubmit(item)}
-              />
+              <MovieForm mode={mode} initialData={selectedItem} onSubmit={handleSubmit} />
             )}
           </OffCanvas>
 
