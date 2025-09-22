@@ -7,6 +7,15 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
   return (
     <form className="space-y-4">
       <div>
+        <h2 className="text-2xl font-bold text-blue-700 mb-4">
+          {mode === 'view'
+            ? 'Ver Película'
+            : mode === 'edit'
+              ? 'Editar Película'
+              : 'Agregar Película'}
+        </h2>
+      </div>
+      <div>
         <label className="block text-sm font-medium text-gray-700">Titulo</label>
         <input
           type="text"
@@ -23,8 +32,9 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
           type="text"
           name="director"
           defaultValue={initialData.director || ''}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+          disabled={mode === 'view'}
         />
       </div>
       <div>
@@ -32,9 +42,10 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
         <input
           type="text"
           name="productor"
-          defaultValue={initialData.productor || ''}
-          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-          required
+          defaultValue={initialData.producer || ''}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+          disabled={mode === 'view'}
         />
       </div>
       <div className="flex justify-end">
