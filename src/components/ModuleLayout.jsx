@@ -4,6 +4,15 @@ import Table from './Table';
 import { Pagination } from './Pagination';
 import { useState } from 'react';
 import Searcher from './Searcher';
+import OffCanvas from './OffCanvas';
+import MovieForm from '../modules/movies/MovieForm';
+import { addMovie } from '../modules/movies/MovieService';
+
+const BLANK_MOVIE = {
+  title: '',
+  director: '',
+  producer: '',
+};
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -11,6 +20,37 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
+  const [mode, setMode] = useState('view');
+
+  const handleOpen = (mode, item = {}) => {
+    setMode(mode);
+    if (mode !== 'add') {
+      setSelectedItem(item);
+    } else {
+      setSelectedItem(BLANK_MOVIE);
+    }
+    setIsOffCanvasOpen(true);
+    console.log('mode:', mode);
+  };
+
+  const handleClose = () => {
+    setIsOffCanvasOpen(false);
+    setSelectedItem({});
+  };
+
+  const handleSubmit = (item) => {
+    addMovie(item).then(() => {
+      handleClose();
+      fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
+        .then((res) => res.json())
+        .then((response) => {
+          setData(response.data);
+          setTotalItems(response.itemsCount);
+        });
+    });
+  };
 
   useEffect(() => {
     if (totalItems > 0 && totalItems >= totalItems) setCurrentPage(1);
@@ -39,6 +79,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             <h1 className="text-2xl font-bold text-blue-700">{title}</h1>
 
             <button
+              onClick={() => handleOpen('add')}
               className="bg-blue-200 text-blue-700 px-4 py-1 rounded-2xl text-md
                 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"
             >
@@ -52,7 +93,19 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             data={data}
             setItemsPerPage={setItemsPerPage}
             module={module}
+            onEdit={(item) => handleOpen('edit', item)}
+            onView={(item) => handleOpen('view', item)}
           />
+
+          <OffCanvas isOpen={isOffCanvasOpen} onClose={handleClose}>
+            {module === 'movies' && (
+              <MovieForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={(item) => handleSubmit(item)}
+              />
+            )}
+          </OffCanvas>
 
           <div className="flex justify-end">
             <Pagination

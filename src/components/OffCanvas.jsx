@@ -11,7 +11,7 @@ export default function OffCanvas({ isOpen, onClose, children }) {
           fixed top-0 right-0 h-full bg-white shadow-lg z-50
           transition-all duration-300 ease-out
           overflow-hidden 
-          ${isOpen ? 'w-72' : 'w-0'}
+          ${isOpen ? 'w-80' : 'w-0'}
         `}
       >
         <div className="p-4 flex justify-end">
@@ -20,6 +20,7 @@ export default function OffCanvas({ isOpen, onClose, children }) {
             className="text-gray-400 hover:text-gray-800 cursor-pointer"
           >
             <X />
+            <span className="sr-only">Close panel</span>
           </button>
         </div>
         <div className="p-4 overflow-y-auto h-full">{children}</div>
