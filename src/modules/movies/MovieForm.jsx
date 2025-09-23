@@ -2,6 +2,7 @@ import { Field, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'formik';
+import { Loader2 } from 'lucide-react';
 
 const BLANK_MOVIE = {
   title: '',
@@ -23,7 +24,7 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
       onSubmit={onSubmit}
       validationSchema={MovieSchema}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, isSubmitting }) => (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
@@ -79,9 +80,16 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
             {mode !== 'view' && (
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 
+                flex items-center justify-center disabled:bg-blue-400 disabled:cursor-not-allowed"
               >
-                {mode === 'add' ? 'Agregar' : 'Guardar Cambios'}
+                {isSubmitting ? (
+                  <Loader2 className="animate-spin h-5 w-5" />
+                ) : mode === 'add' ? (
+                  'Agregar'
+                ) : (
+                  'Guardar Cambios'
+                )}
               </button>
             )}
           </div>

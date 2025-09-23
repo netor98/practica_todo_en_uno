@@ -7,12 +7,7 @@ import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
 import MovieForm from '../modules/movies/MovieForm';
 import { addMovie } from '../modules/movies/MovieService';
-
-const BLANK_MOVIE = {
-  title: '',
-  director: '',
-  producer: '',
-};
+import { ModalResult } from './modals/ModalResult';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -23,13 +18,15 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [mode, setMode] = useState('view');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpen = (mode, item = {}) => {
     setMode(mode);
     if (mode !== 'add') {
       setSelectedItem(item);
     } else {
-      setSelectedItem(BLANK_MOVIE);
+      setSelectedItem({});
     }
     setIsOffCanvasOpen(true);
   };
@@ -39,17 +36,17 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     setSelectedItem({});
   };
 
-  const handleSubmit = (item) => {
-    console.log('Submitting item:', item);
-    addMovie(item).then(() => {
+  const handleSubmit = async (item, { setSubmitting }) => {
+    try {
+      await addMovie(item);
+      setSubmitting(false);
       handleClose();
-      fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
-        .then((res) => res.json())
-        .then((response) => {
-          setData(response.data);
-          setTotalItems(response.itemsCount);
-        });
-    });
+    } catch (error) {
+      console.error('Error adding movie:', error);
+      setModalMessage('Error al agregar la película. Por favor, inténtelo de nuevo.');
+      setIsModalOpen(true);
+      setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -103,6 +100,9 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             )}
           </OffCanvas>
 
+          {isModalOpen && (
+            <ModalResult message={modalMessage} onClose={() => setIsModalOpen(false)} />
+          )}
           <div className="flex justify-end">
             <Pagination
               itemsPerPage={setItemsPerPage}
