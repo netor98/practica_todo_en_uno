@@ -40,10 +40,11 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     try {
       await addMovie(item);
       setSubmitting(false);
+      setModalMessage('Película agregada exitosamente.');
+      setIsModalOpen(true);
       handleClose();
     } catch (error) {
-      console.error('Error adding movie:', error);
-      setModalMessage('Error al agregar la película. Por favor, inténtelo de nuevo.');
+      setModalMessage(`Error al agregar la película. ${error}`);
       setIsModalOpen(true);
       setSubmitting(false);
     }

@@ -2,7 +2,7 @@ export function ModalResult({ message, onClose }) {
   return (
     <div
       className={`fixed inset-0 z-40 flex items-center justify-center
-        bg-gray-200 opacity-85`}
+        `}
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-xl font-bold mb-4">Resultado</h2>

@@ -7,12 +7,13 @@ export const addMovie = async (movie) => {
       },
       body: JSON.stringify(movie),
     });
+    // console.log(response);
     if (!response.ok) {
-      throw new Error('Error al agregar la película');
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al agregar la película');
     }
     return await response.json();
   } catch (error) {
-    console.error('Error:', error);
     throw error;
   }
 };
