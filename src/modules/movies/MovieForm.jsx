@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { ErrorMessage } from 'formik';
 import { Loader2 } from 'lucide-react';
 
-const BLANK_MOVIE = {
+export const BLANK_MOVIE = {
   title: '',
   director: '',
   producer: '',
@@ -17,13 +17,14 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
     producer: Yup.string().required('El productor es obligatorio'),
   });
 
-  const test = () => console.log('test');
-
   return (
     <Formik
       initialValues={{ ...BLANK_MOVIE, ...initialData }}
       enableReinitialize
-      onSubmit={onSubmit}
+      onSubmit={async (values, helpers) => {
+        await onSubmit(values, helpers);
+        helpers.resetForm();
+      }}
       validationSchema={MovieSchema}
     >
       {({ handleSubmit, isSubmitting }) => (

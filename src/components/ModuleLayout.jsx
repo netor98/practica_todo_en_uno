@@ -5,7 +5,7 @@ import { Pagination } from './Pagination';
 import { useState } from 'react';
 import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
-import MovieForm from '../modules/movies/MovieForm';
+import MovieForm, { BLANK_MOVIE } from '../modules/movies/MovieForm';
 import { addMovie, deleteMovie } from '../modules/movies/MovieService';
 import { ModalResult } from './modals/ModalResult';
 
@@ -21,6 +21,10 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    console.log('Selected Item:', selectedItem);
+  }, [selectedItem]);
+
   const fechData = async () => {
     const response = await fetch(
       `${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
@@ -35,23 +39,21 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     if (mode !== 'add') {
       setSelectedItem(item);
     } else {
-      setSelectedItem({});
+      setSelectedItem(BLANK_MOVIE);
     }
     setIsOffCanvasOpen(true);
   };
 
   const handleClose = () => {
     setIsOffCanvasOpen(false);
-    setSelectedItem({});
+    setSelectedItem(BLANK_MOVIE);
   };
 
   //
   const handleSubmit = (serviceFunction, message) => {
     return async (item, { setSubmitting }) => {
       try {
-        console.log(item);
         await serviceFunction(item);
-        // await addMovie(item);
         setSubmitting(false);
         setModalMessage(message || 'Operación realizada con éxito');
         setIsModalOpen(true);
@@ -62,6 +64,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
         setSubmitting(false);
       } finally {
         fechData();
+        setSelectedItem(BLANK_MOVIE);
       }
     };
   };
@@ -127,6 +130,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             {module === 'movies' && (
               <MovieForm
                 mode={mode}
+                key={selectedItem ? selectedItem.id : 'new'}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(addMovie, 'Película agregada con éxito')}
               />
