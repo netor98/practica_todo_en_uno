@@ -17,3 +17,18 @@ export const addMovie = async (movie) => {
     throw error;
   }
 };
+
+export const deleteMovie = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/movies/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al eliminar la película');
+    }
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

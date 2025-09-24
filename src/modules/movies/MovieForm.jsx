@@ -17,6 +17,8 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
     producer: Yup.string().required('El productor es obligatorio'),
   });
 
+  const test = () => console.log('test');
+
   return (
     <Formik
       initialValues={{ ...BLANK_MOVIE, ...initialData }}

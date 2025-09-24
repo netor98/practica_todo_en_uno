@@ -21,6 +21,15 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const fechData = async () => {
+    const response = await fetch(
+      `${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
+    );
+    const result = await response.json();
+    setData(result.data);
+    setTotalItems(result.itemsCount);
+  };
+
   const handleOpen = (mode, item = {}) => {
     setMode(mode);
     if (mode !== 'add') {
@@ -36,18 +45,25 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     setSelectedItem({});
   };
 
-  const handleSubmit = async (item, { setSubmitting }) => {
-    try {
-      await addMovie(item);
-      setSubmitting(false);
-      setModalMessage('Película agregada exitosamente.');
-      setIsModalOpen(true);
-      handleClose();
-    } catch (error) {
-      setModalMessage(`Error al agregar la película. ${error}`);
-      setIsModalOpen(true);
-      setSubmitting(false);
-    }
+  //
+  const handleSubmit = (serviceFunction) => {
+    return async (item, { setSubmitting }) => {
+      try {
+        console.log(item);
+        await serviceFunction(item);
+        // await addMovie(item);
+        setSubmitting(false);
+        setModalMessage('Película agregada exitosamente.');
+        setIsModalOpen(true);
+        handleClose();
+      } catch (error) {
+        setModalMessage(`Error al agregar la película. ${error}`);
+        setIsModalOpen(true);
+        setSubmitting(false);
+      } finally {
+        fechData();
+      }
+    };
   };
 
   useEffect(() => {
@@ -55,12 +71,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   }, [itemsPerPage, totalItems]);
 
   useEffect(() => {
-    fetch(`${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`)
-      .then((res) => res.json())
-      .then((response) => {
-        setData(response.data);
-        setTotalItems(response.itemsCount);
-      });
+    fechData();
   }, [itemsPerPage, currentPage, apiEndpoint]);
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -97,7 +108,11 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
 
           <OffCanvas isOpen={isOffCanvasOpen} onClose={handleClose}>
             {module === 'movies' && (
-              <MovieForm mode={mode} initialData={selectedItem} onSubmit={handleSubmit} />
+              <MovieForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(addMovie)}
+              />
             )}
           </OffCanvas>
 
