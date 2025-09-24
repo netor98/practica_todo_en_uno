@@ -19,6 +19,7 @@ export const addMovie = async (movie) => {
 };
 
 export const deleteMovie = async (id) => {
+  console.log('deleteMovie id:', id);
   try {
     const response = await fetch(`http://localhost:3000/api/movies/${id}`, {
       method: 'DELETE',

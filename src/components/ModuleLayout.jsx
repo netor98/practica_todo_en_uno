@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
 import MovieForm from '../modules/movies/MovieForm';
-import { addMovie } from '../modules/movies/MovieService';
+import { addMovie, deleteMovie } from '../modules/movies/MovieService';
 import { ModalResult } from './modals/ModalResult';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
@@ -46,14 +46,14 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   };
 
   //
-  const handleSubmit = (serviceFunction) => {
+  const handleSubmit = (serviceFunction, message) => {
     return async (item, { setSubmitting }) => {
       try {
         console.log(item);
         await serviceFunction(item);
         // await addMovie(item);
         setSubmitting(false);
-        setModalMessage('Película agregada exitosamente.');
+        setModalMessage(message || 'Operación realizada con éxito');
         setIsModalOpen(true);
         handleClose();
       } catch (error) {
@@ -64,6 +64,20 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
         fechData();
       }
     };
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      console.log('Deleting item with id:', id);
+      await deleteMovie(id);
+      setModalMessage('Registro eliminado con éxito');
+      setIsModalOpen(true);
+    } catch (error) {
+      setModalMessage(`Error al eliminar el registro. ${error}`);
+      setIsModalOpen(true);
+    } finally {
+      fechData();
+    }
   };
 
   useEffect(() => {
@@ -104,6 +118,9 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             module={module}
             onEdit={(item) => handleOpen('edit', item)}
             onView={(item) => handleOpen('view', item)}
+            OnDelete={(id) => {
+              handleDelete(id);
+            }}
           />
 
           <OffCanvas isOpen={isOffCanvasOpen} onClose={handleClose}>
@@ -111,7 +128,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
               <MovieForm
                 mode={mode}
                 initialData={selectedItem}
-                onSubmit={handleSubmit(addMovie)}
+                onSubmit={handleSubmit(addMovie, 'Película agregada con éxito')}
               />
             )}
           </OffCanvas>

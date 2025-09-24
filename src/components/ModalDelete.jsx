@@ -10,7 +10,7 @@ export function ModalDelete({ isOpen, onClose, onConfirm, itemName }) {
         </h3>
         <div className="flex justify-center space-x-4 [&>button]:cursor-pointer">
           <button
-            onClick={onClose}
+            onClick={() => onConfirm(itemName)}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Sí

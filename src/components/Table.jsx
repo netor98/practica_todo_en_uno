@@ -1,13 +1,11 @@
 import { Eye, PencilLine, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { ModalDelete } from './ModalDelete';
-import OffCanvas from './OffCanvas';
-import MovieForm from '../modules/movies/MovieForm';
-import PlanetsForm from '../modules/planets/PlanetsForm';
 import { useEffect } from 'react';
 
-export default function Table({ columns, data, module, onView, onEdit }) {
+export default function Table({ columns, data, module, onView, onEdit, OnDelete }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     console.log('module:', module);
@@ -57,7 +55,11 @@ export default function Table({ columns, data, module, onView, onEdit }) {
                   </button>
 
                   <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setItemToDelete(item._id);
+                      // OnDelete(item._id);
+                    }}
                     className="bg-gray-200 px-1 py-1 text-red-500 rounded-lg text-sm
                   hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
                   >
@@ -69,7 +71,15 @@ export default function Table({ columns, data, module, onView, onEdit }) {
           ))}
         </tbody>
       </table>
-      <ModalDelete isOpen={isModalOpen} onClose={(value) => setIsModalOpen(!value)} />
+      <ModalDelete
+        isOpen={isModalOpen}
+        itemName={itemToDelete}
+        onConfirm={() => {
+          OnDelete(itemToDelete);
+          setIsModalOpen(false);
+        }}
+        onClose={(value) => setIsModalOpen(!value)}
+      />
     </div>
   );
 }
