@@ -33,3 +33,24 @@ export const deleteMovie = async (id) => {
     throw error;
   }
 };
+
+export const updateMovie = async (movie) => {
+  const { _id } = movie;
+  console.log('updateMovie id:', _id);
+  try {
+    const response = await fetch(`http://localhost:3000/api/movies/${_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(movie),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al actualizar la película');
+    }
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

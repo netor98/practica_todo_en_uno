@@ -6,8 +6,11 @@ import { useState } from 'react';
 import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
 import MovieForm, { BLANK_MOVIE } from '../modules/movies/MovieForm';
-import { addMovie, deleteMovie } from '../modules/movies/MovieService';
+import { addMovie, deleteMovie, updateMovie } from '../modules/movies/MovieService';
 import { ModalResult } from './modals/ModalResult';
+import PlanetsForm from '../modules/planets/PlanetsForm';
+import SpeciesForm from '../modules/species/SpeciesForm';
+import VehiclesForm from '../modules/vehicles/VehiclesForm';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -21,16 +24,13 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    console.log('Selected Item:', selectedItem);
-  }, [selectedItem]);
-
   const fechData = async () => {
     const response = await fetch(
       `${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
     );
     const result = await response.json();
     setData(result.data);
+    console.log(result.data);
     setTotalItems(result.itemsCount);
   };
 
@@ -59,7 +59,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
         setIsModalOpen(true);
         handleClose();
       } catch (error) {
-        setModalMessage(`Error al agregar la película. ${error}`);
+        setModalMessage(`Error al realizar la operacion. ${error}`);
         setIsModalOpen(true);
         setSubmitting(false);
       } finally {
@@ -71,7 +71,6 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
 
   const handleDelete = async (id) => {
     try {
-      console.log('Deleting item with id:', id);
       await deleteMovie(id);
       setModalMessage('Registro eliminado con éxito');
       setIsModalOpen(true);
@@ -132,7 +131,48 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 key={selectedItem ? selectedItem.id : 'new'}
                 initialData={selectedItem}
-                onSubmit={handleSubmit(addMovie, 'Película agregada con éxito')}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Película agregada con éxito'
+                    : 'Película actualizada con éxito',
+                )}
+              />
+            )}
+            {module === 'planets' && (
+              <PlanetsForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Planeta agregado con éxito'
+                    : 'Planeta actualizado con éxito',
+                )}
+              />
+            )}
+            {module === 'species' && (
+              <SpeciesForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Especie agregada con éxito'
+                    : 'Especie actualizada con éxito',
+                )}
+              />
+            )}
+            {module === 'vehicles' && (
+              <VehiclesForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Vehículo agregado con éxito'
+                    : 'Vehículo actualizado con éxito',
+                )}
               />
             )}
           </OffCanvas>

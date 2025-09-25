@@ -3,8 +3,8 @@ import { ModuleLayout } from '../../components/ModuleLayout';
 const planetsColumns = [
   { title: 'Nombre', field: 'name' },
   { title: 'Diametro', field: 'diameter' },
-  { title: 'Periodo de rotacion', field: 'rotation' },
-  { title: 'Periodo orbital', field: 'orbital' },
+  { title: 'Periodo de rotacion', field: 'rotation_period' },
+  { title: 'Periodo orbital', field: 'orbital_period' },
   { title: 'Gravedad', field: 'gravity' },
   // { title: "Poblacion", field: "population" },
   // { title: "Clima", field: "climate" },

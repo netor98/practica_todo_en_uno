@@ -1,53 +1,50 @@
 import { Field, Formik } from 'formik';
-import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { ErrorMessage } from 'formik';
 import { Loader2 } from 'lucide-react';
 
-export const BLANK_PLANET = {
+export const BLANK_VEHICLE = {
   name: '',
-  gravity: '',
-  terrain: '',
-  diameter: '',
-  rotation_period: '',
-  orbital_period: '',
-  population: '',
-  climate: '',
-  surface_water: '',
+  model: '',
+  class: '',
+  length: '',
+  num_passengers: '',
+  atmosphering_speed: '',
+  cargo_capacity: '',
+  max_time_consumable: '',
 };
 
-export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' }) {
-  const PlanetSchema = Yup.object().shape({
+export default function VehiclesForm({ onSubmit, initialData = {}, mode = 'view' }) {
+  const VehicleSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
-    gravity: Yup.string(),
-    terrain: Yup.string(),
-    diameter: Yup.string(),
-    rotation_period: Yup.string(),
-    orbital_period: Yup.string(),
-    population: Yup.string(),
-    climate: Yup.string(),
-    surface_water: Yup.string(),
+    model: Yup.string().required('El model es obligatorio'),
+    class: Yup.string(),
+    length: Yup.string(),
+    num_passengers: Yup.string(),
+    max_atmosphering_speed: Yup.string(),
+    cargo_capacity: Yup.string(),
+    max_time_consumable: Yup.string(),
   });
 
   return (
     <Formik
-      initialValues={{ ...BLANK_PLANET, ...initialData }}
+      initialValues={{ ...BLANK_VEHICLE, ...initialData }}
       enableReinitialize
       onSubmit={async (values, helpers) => {
         await onSubmit(values, helpers);
         helpers.resetForm();
       }}
-      validationSchema={PlanetSchema}
+      validationSchema={VehicleSchema}
     >
       {({ handleSubmit, isSubmitting }) => (
         <form className="space-y-4 mb-10" onSubmit={handleSubmit}>
           <div>
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
               {mode === 'view'
-                ? 'Ver Planeta'
+                ? 'Ver Vehículo'
                 : mode === 'edit'
-                  ? 'Editar Planeta'
-                  : 'Agregar Planeta'}
+                  ? 'Editar Vehículo'
+                  : 'Agregar Vehículo'}
             </h2>
           </div>
           <div>
@@ -62,74 +59,41 @@ export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' 
             <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Diametro</label>
+            <label className="block text-sm font-medium text-gray-700">Modelo</label>
             <Field
               type="text"
-              name="diameter"
+              name="model"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+              disabled={mode === 'view'}
+            />
+            <ErrorMessage name="model" component="div" className="text-red-500 text-sm" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Clase</label>
+            <Field
+              type="text"
+              name="class"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Gravedad</label>
+            <label className="block text-sm font-medium text-gray-700">Tamaño</label>
             <Field
               type="text"
-              name="gravity"
+              name="length"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Terreno</label>
+            <label className="block text-sm font-medium text-gray-700">Pasajeros</label>
             <Field
               type="text"
-              name="terrain"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
-          disabled:bg-gray-100 disabled:cursor-not-allowed"
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Periodo de Rotación
-            </label>
-            <Field
-              type="text"
-              name="rotation_period"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
-          disabled:bg-gray-100 disabled:cursor-not-allowed"
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Periodo Orbital
-            </label>
-            <Field
-              type="text"
-              name="orbital_period"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
-          disabled:bg-gray-100 disabled:cursor-not-allowed"
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Población</label>
-            <Field
-              type="text"
-              name="population"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
-          disabled:bg-gray-100 disabled:cursor-not-allowed"
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Clima</label>
-            <Field
-              type="text"
-              name="climate"
+              name="passengers"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
@@ -137,11 +101,36 @@ export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' 
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Agua Superficial
+              Máxima Velocidad Atmosférica
             </label>
             <Field
               type="text"
-              name="surface_water"
+              name="atmosphering_speed"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+              disabled={mode === 'view'}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Capacidad de Carga
+            </label>
+            <Field
+              type="text"
+              name="cargo_capacity"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+              disabled={mode === 'view'}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Tiempo Máximo de Consumibles
+            </label>
+            <Field
+              type="text"
+              name="max_time_consumable"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
           disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
