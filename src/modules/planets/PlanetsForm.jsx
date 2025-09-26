@@ -51,7 +51,9 @@ export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' 
             </h2>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Nombre<span className="text-red-500 text-xl">*</span>
+            </label>
             <Field
               type="text"
               name="name"

@@ -23,7 +23,7 @@ export default function OffCanvas({ isOpen, onClose, children }) {
             <span className="sr-only">Close panel</span>
           </button>
         </div>
-        <div className="p-4 overflow-y-auto h-full">{children}</div>
+        <div className="p-4 overflow-y-auto h-full ">{children}</div>
       </div>
     </div>
   );

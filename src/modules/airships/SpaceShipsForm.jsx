@@ -61,7 +61,9 @@ export default function SpaceShipsForm({ onSubmit, initialData = {}, mode = 'vie
             <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Modelo</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Modelo<span className="text-red-500 text-xl">*</span>
+            </label>
             <Field
               type="text"
               name="model"

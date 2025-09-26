@@ -39,7 +39,10 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
             </h2>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Titulo</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Titulo<span className="text-red-500 text-xl">*</span>
+            </label>
+
             <Field
               type="text"
               name="title"
@@ -50,7 +53,9 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
             <ErrorMessage name="title" component="div" className="text-red-500 text-sm" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Director</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Director<span className="text-red-500 text-xl">*</span>
+            </label>
             <Field
               type="text"
               name="director"
@@ -65,7 +70,9 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Productor</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Productor<span className="text-red-500 text-xl">*</span>
+            </label>
             <Field
               type="text"
               name="producer"

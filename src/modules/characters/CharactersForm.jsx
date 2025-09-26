@@ -4,57 +4,68 @@ import { ErrorMessage } from 'formik';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getMoviesList } from '../movies/MovieService';
+import { getVehiclesList } from '../vehicles/VehicleService';
 import { inputClasses } from '../InputClasses';
+import { getSpaceShipsList } from '../airships/SpaceShipService';
 
-export const BLANK_SPACESHIP = {
+export const BLANK_CHARACTER = {
   name: '',
-  model: '',
-  class: '',
-  length: '',
-  num_passengers: '',
-  atmosphering_speed: '',
-  cargo_capacity: '',
-  max_time_consumable: '',
+  birthdate: '',
+  eyes_color: '',
+  genre: '',
+  hair_color: '',
+  skin_color: '',
+  height: '',
+  mass: '',
+  movies: [],
 };
-
 export default function CharactersForm({ onSubmit, initialData = {}, mode = 'view' }) {
   const [movies, setMovies] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [spaceships, setSpaceships] = useState([]);
 
-  const getMovies = async () => {
+  const getData = async () => {
     const moviesList = await getMoviesList();
+    const vehiclesList = await getVehiclesList();
+    const spaceshipsList = await getSpaceShipsList();
     setMovies(moviesList);
+    setVehicles(vehiclesList);
+    setSpaceships(spaceshipsList);
   };
+
   useEffect(() => {
-    getMovies();
+    getData();
   }, []);
 
   const CharacterSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
-    model: Yup.string().required('El model es obligatorio'),
-    class: Yup.string(),
-    length: Yup.string(),
-    num_passengers: Yup.string(),
-    max_atmosphering_speed: Yup.string(),
-    cargo_capacity: Yup.string(),
-    max_time_consumable: Yup.string(),
+    birthdate: Yup.string(),
+    eyes_color: Yup.string(),
+    genre: Yup.string(),
+    hair_color: Yup.string(),
+    skin_color: Yup.string(),
+    height: Yup.string(),
+    mass: Yup.string(),
+    movies: Yup.array(),
+    spaceships: Yup.array(),
+    vehicles: Yup.array(),
   });
 
   return (
     <Formik
       initialValues={{
-        ...BLANK_SPACESHIP,
+        ...BLANK_CHARACTER,
         ...initialData,
         movies: initialData.movies?.map((movie) => movie._id) || [],
+        spaceships: initialData.spaceships || [],
+        vehicles: initialData.vehicles || [],
       }}
       enableReinitialize
-      onSubmit={async (values, helpers) => {
-        await onSubmit(values, helpers);
-        helpers.resetForm();
-      }}
+      onSubmit={onSubmit}
       validationSchema={CharacterSchema}
     >
       {({ handleSubmit, isSubmitting }) => (
-        <form className="space-y-4 mb-10" onSubmit={handleSubmit}>
+        <form className="space-y-4 mb-20" onSubmit={handleSubmit}>
           <div>
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
               {mode === 'view'
@@ -156,24 +167,85 @@ export default function CharactersForm({ onSubmit, initialData = {}, mode = 'vie
               disabled={mode === 'view'}
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700">Peliculas</label>
+            <label className="block text-sm font-medium text-gray-700">Naves</label>
             {mode === 'view' ? (
-              <input
-                type="text"
+              <textarea
+                rows={initialData.starships?.length || 1}
                 value={
-                  movies.find((p) => p.id === initialData.movies?._id)?.title || 'unknown'
+                  spaceships
+                    .filter((v) => initialData.starships?.includes(v.id))
+                    .map((v) => v.name)
+                    .join(', ') || ''
                 }
-                className={inputClasses}
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
                 disabled
               />
             ) : (
               <Field
                 as="select"
-                name="native_planet"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+                name="starships"
+                multiple={true}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled:bg-gray-100"
+                disabled={mode === 'view'}
               >
-                <option value="">Selecciona las peliculas</option>
+                {spaceships.map((spacship) => (
+                  <option key={spacship.id} value={spacship.id}>
+                    {spacship.name}
+                  </option>
+                ))}
+              </Field>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Vehicles</label>
+            {mode === 'view' ? (
+              <textarea
+                rows={initialData.vehicles?.length || 1}
+                value={
+                  vehicles
+                    .filter((v) => initialData.vehicles?.includes(v.id))
+                    .map((v) => v.name)
+                    .join(', ') || ''
+                }
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+                disabled
+              />
+            ) : (
+              <Field
+                as="select"
+                name="vehicles"
+                multiple={true}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled:bg-gray-100"
+                disabled={mode === 'view'}
+              >
+                {vehicles.map((vehicle) => (
+                  <option key={vehicle.id} value={vehicle.id}>
+                    {vehicle.name}
+                  </option>
+                ))}
+              </Field>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Peliculas</label>
+            {mode === 'view' ? (
+              <textarea
+                rows={initialData.movies?.length || 1}
+                value={initialData.movies?.map((v) => v.title).join(', ') || ''}
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+                disabled
+              />
+            ) : (
+              <Field
+                as="select"
+                name="movies"
+                multiple={true}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled:bg-gray-100"
+                disabled={mode === 'view'}
+              >
                 {movies.map((movie) => (
                   <option key={movie.id} value={movie.id}>
                     {movie.title}

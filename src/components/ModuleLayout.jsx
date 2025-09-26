@@ -4,7 +4,7 @@ import Table from './Table';
 import { Pagination } from './Pagination';
 import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
-import MovieForm, { BLANK_MOVIE } from '../modules/movies/MovieForm';
+import MovieForm from '../modules/movies/MovieForm';
 import { addMovie, deleteMovie, updateMovie } from '../modules/movies/MovieService';
 import { ModalResult } from './modals/ModalResult';
 import PlanetsForm from '../modules/planets/PlanetsForm';
@@ -14,6 +14,22 @@ import SpaceShipsForm from '../modules/airships/SpaceShipsForm';
 import CharactersForm from '../modules/characters/CharactersForm';
 import { addPlanet, deletePlanet, updatePlanet } from '../modules/planets/PlanetService';
 import { ModalDelete } from './ModalDelete';
+import {
+  addVehicle,
+  updateVehicle,
+  deleteVehicle,
+} from '../modules/vehicles/VehicleService';
+import {
+  addSpaceShip,
+  deleteSpaceShip,
+  updateSpaceShip,
+} from '../modules/airships/SpaceShipService';
+import { addSpecie, deleteSpecie, updateSpecie } from '../modules/species/SpecieService';
+import {
+  addCharacter,
+  deleteCharacter,
+  updateCharacter,
+} from '../modules/characters/CharacterService';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -82,7 +98,14 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     console.log('Deleting item:', itemToDelete);
     if (!itemToDelete) return;
 
-    const deleteFunction = module === 'movies' ? deleteMovie : deletePlanet;
+    const deleteFunction = {
+      movies: deleteMovie,
+      planets: deletePlanet,
+      vehicles: deleteVehicle,
+      spaceships: deleteSpaceShip,
+      species: deleteSpecie,
+      characters: deleteCharacter,
+    }[module];
 
     try {
       await deleteFunction(itemToDelete);
@@ -170,7 +193,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
-                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add' ? addSpecie : updateSpecie,
                   mode === 'add'
                     ? 'Especie agregada con éxito'
                     : 'Especie actualizada con éxito',
@@ -182,7 +205,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
-                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add' ? addVehicle : updateVehicle,
                   mode === 'add'
                     ? 'Vehículo agregado con éxito'
                     : 'Vehículo actualizado con éxito',
@@ -194,7 +217,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
-                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add' ? addSpaceShip : updateSpaceShip,
                   mode === 'add'
                     ? 'Nave espacial agregada con éxito'
                     : 'Nave espacial actualizada con éxito',
@@ -206,7 +229,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
-                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add' ? addCharacter : updateCharacter,
                   mode === 'add'
                     ? 'Personaje agregado con éxito'
                     : 'Personaje actualizado con éxito',
