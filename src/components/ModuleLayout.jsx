@@ -11,6 +11,7 @@ import { ModalResult } from './modals/ModalResult';
 import PlanetsForm from '../modules/planets/PlanetsForm';
 import SpeciesForm from '../modules/species/SpeciesForm';
 import VehiclesForm from '../modules/vehicles/VehiclesForm';
+import SpaceShipsForm from '../modules/airships/SpaceShipsForm';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -172,6 +173,18 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                   mode === 'add'
                     ? 'Vehículo agregado con éxito'
                     : 'Vehículo actualizado con éxito',
+                )}
+              />
+            )}
+            {module === 'spaceships' && (
+              <SpaceShipsForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Nave espacial agregada con éxito'
+                    : 'Nave espacial actualizada con éxito',
                 )}
               />
             )}
