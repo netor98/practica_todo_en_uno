@@ -19,7 +19,6 @@ export const addMovie = async (movie) => {
 };
 
 export const deleteMovie = async (id) => {
-  console.log('deleteMovie id:', id);
   try {
     const response = await fetch(`http://localhost:3000/api/movies/${id}`, {
       method: 'DELETE',
@@ -36,7 +35,6 @@ export const deleteMovie = async (id) => {
 
 export const updateMovie = async (movie) => {
   const { _id } = movie;
-  console.log('updateMovie id:', _id);
   try {
     const response = await fetch(`http://localhost:3000/api/movies/${_id}`, {
       method: 'PUT',
@@ -48,6 +46,20 @@ export const updateMovie = async (movie) => {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Error al actualizar la película');
+    }
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getMoviesList = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/movies/list');
+    console.log('getMoviesList response:', response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al obtener la lista de películas');
     }
     return await response.json();
   } catch (error) {

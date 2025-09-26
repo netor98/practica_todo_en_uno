@@ -3,175 +3,166 @@ import * as Yup from 'yup';
 import { ErrorMessage } from 'formik';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getMoviesList } from '../movies/MovieService';
 import { inputClasses } from '../InputClasses';
 
-export const BLANK_SPECIE = {
+export const BLANK_SPACESHIP = {
   name: '',
-  classification: '',
-  designation: '',
-  average_height: '',
-  average_lifespan: '',
-  eye_color: '',
-  hair_color: '',
-  skin_color: '',
-  language: '',
-  native_planet: '',
+  model: '',
+  class: '',
+  length: '',
+  num_passengers: '',
+  atmosphering_speed: '',
+  cargo_capacity: '',
+  max_time_consumable: '',
 };
-export default function SpeciesForm({ onSubmit, initialData = {}, mode = 'view' }) {
-  const [planets, setPlanets] = useState([]);
-  const api = 'http://localhost:3000/api';
 
-  const fetchPlanets = async () => {
-    const response = await fetch(`${api}/planets/list`);
-    const result = await response.json();
-    setPlanets(result);
+export default function CharactersForm({ onSubmit, initialData = {}, mode = 'view' }) {
+  const [movies, setMovies] = useState([]);
+
+  const getMovies = async () => {
+    const moviesList = await getMoviesList();
+    setMovies(moviesList);
   };
   useEffect(() => {
-    fetchPlanets();
+    getMovies();
   }, []);
 
-  const SpecieSchema = Yup.object().shape({
+  const CharacterSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
-    classification: Yup.string(),
-    designation: Yup.string(),
-    average_height: Yup.string(),
-    average_lifespan: Yup.string(),
-    eye_color: Yup.string(),
-    hair_color: Yup.string(),
-    skin_color: Yup.string(),
-    language: Yup.string(),
-    native_planet: Yup.string(),
+    model: Yup.string().required('El model es obligatorio'),
+    class: Yup.string(),
+    length: Yup.string(),
+    num_passengers: Yup.string(),
+    max_atmosphering_speed: Yup.string(),
+    cargo_capacity: Yup.string(),
+    max_time_consumable: Yup.string(),
   });
 
   return (
     <Formik
       initialValues={{
-        ...BLANK_SPECIE,
+        ...BLANK_SPACESHIP,
         ...initialData,
-        native_planet: initialData.native_planet?._id,
+        movies: initialData.movies?.map((movie) => movie._id) || [],
       }}
       enableReinitialize
       onSubmit={async (values, helpers) => {
         await onSubmit(values, helpers);
         helpers.resetForm();
       }}
-      validationSchema={SpecieSchema}
+      validationSchema={CharacterSchema}
     >
       {({ handleSubmit, isSubmitting }) => (
         <form className="space-y-4 mb-10" onSubmit={handleSubmit}>
           <div>
             <h2 className="text-2xl font-bold text-blue-700 mb-4">
               {mode === 'view'
-                ? 'Ver Especie'
+                ? 'Ver Personaje'
                 : mode === 'edit'
-                  ? 'Editar Especie'
-                  : 'Agregar Especie'}
+                  ? 'Editar Personaje'
+                  : 'Agregar Personaje'}
             </h2>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Nombre <span className="text-red-500 text-xl">*</span>
+            </label>
             <Field
               type="text"
               name="name"
-              className={inputClasses}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
             <ErrorMessage name="name" component="div" className="text-red-500 text-sm" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Clasificación
+              Fecha de nacimiento
             </label>
             <Field
               type="text"
-              name="classification"
-              className={inputClasses}
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Designación</label>
-            <Field
-              type="text"
-              name="designation"
-              className={inputClasses}
+              name="birthdate"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Estatura Promedio
+              Color de ojos
             </label>
             <Field
               type="text"
-              name="average_height"
-              className={inputClasses}
+              name="eyes_color"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+              disabled={mode === 'view'}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Genero</label>
+            <Field
+              type="text"
+              name="genre"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Esperanza de Vida
-            </label>
-            <Field
-              type="text"
-              name="average_lifespan"
-              className={inputClasses}
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Color de Ojos
-            </label>
-            <Field
-              type="text"
-              name="eye_color"
-              className={inputClasses}
-              disabled={mode === 'view'}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Color de Cabello
+              Color de pelo
             </label>
             <Field
               type="text"
               name="hair_color"
-              className={inputClasses}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Color de Piel
+              Color de piel
             </label>
             <Field
               type="text"
               name="skin_color"
-              className={inputClasses}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Idioma</label>
+            <label className="block text-sm font-medium text-gray-700">Altura</label>
             <Field
               type="text"
-              name="language"
-              className={inputClasses}
+              name="height"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
+              disabled={mode === 'view'}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Peso</label>
+            <Field
+              type="text"
+              name="mass"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+          disabled:bg-gray-100 disabled:cursor-not-allowed"
               disabled={mode === 'view'}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Planeta Nativo
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Peliculas</label>
             {mode === 'view' ? (
               <input
                 type="text"
                 value={
-                  planets.find((p) => p.id === initialData.native_planet?._id)?.name ||
-                  'unknown'
+                  movies.find((p) => p.id === initialData.movies?._id)?.title || 'unknown'
                 }
                 className={inputClasses}
                 disabled
@@ -182,10 +173,10 @@ export default function SpeciesForm({ onSubmit, initialData = {}, mode = 'view' 
                 name="native_planet"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
               >
-                <option value="">Selecciona un planeta</option>
-                {planets.map((planet) => (
-                  <option key={planet.id} value={planet.id}>
-                    {planet.name}
+                <option value="">Selecciona las peliculas</option>
+                {movies.map((movie) => (
+                  <option key={movie.id} value={movie.id}>
+                    {movie.title}
                   </option>
                 ))}
               </Field>

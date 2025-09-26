@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MenuCollapsed from './MenuCollapsed';
 import Table from './Table';
 import { Pagination } from './Pagination';
-import { useState } from 'react';
 import Searcher from './Searcher';
 import OffCanvas from './OffCanvas';
 import MovieForm, { BLANK_MOVIE } from '../modules/movies/MovieForm';
@@ -12,6 +11,9 @@ import PlanetsForm from '../modules/planets/PlanetsForm';
 import SpeciesForm from '../modules/species/SpeciesForm';
 import VehiclesForm from '../modules/vehicles/VehiclesForm';
 import SpaceShipsForm from '../modules/airships/SpaceShipsForm';
+import CharactersForm from '../modules/characters/CharactersForm';
+import { addPlanet, deletePlanet, updatePlanet } from '../modules/planets/PlanetService';
+import { ModalDelete } from './ModalDelete';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const api = 'http://localhost:3000';
@@ -24,6 +26,8 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [mode, setMode] = useState('view');
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const fechData = async () => {
     const response = await fetch(
@@ -31,7 +35,6 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     );
     const result = await response.json();
     setData(result.data);
-    console.log(result.data);
     setTotalItems(result.itemsCount);
   };
 
@@ -40,14 +43,14 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     if (mode !== 'add') {
       setSelectedItem(item);
     } else {
-      setSelectedItem(BLANK_MOVIE);
+      setSelectedItem({});
     }
     setIsOffCanvasOpen(true);
   };
 
   const handleClose = () => {
     setIsOffCanvasOpen(false);
-    setSelectedItem(BLANK_MOVIE);
+    setSelectedItem({});
   };
 
   //
@@ -65,14 +68,24 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
         setSubmitting(false);
       } finally {
         fechData();
-        setSelectedItem(BLANK_MOVIE);
+        setSelectedItem({});
       }
     };
   };
 
-  const handleDelete = async (id) => {
+  const handleOpenDeleteModal = (item) => {
+    setItemToDelete(item);
+    setIsModalDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    console.log('Deleting item:', itemToDelete);
+    if (!itemToDelete) return;
+
+    const deleteFunction = module === 'movies' ? deleteMovie : deletePlanet;
+
     try {
-      await deleteMovie(id);
+      await deleteFunction(itemToDelete);
       setModalMessage('Registro eliminado con éxito');
       setIsModalOpen(true);
     } catch (error) {
@@ -80,6 +93,8 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
       setIsModalOpen(true);
     } finally {
       fechData();
+      setItemToDelete(null);
+      setIsModalDeleteOpen(false);
     }
   };
 
@@ -121,9 +136,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             module={module}
             onEdit={(item) => handleOpen('edit', item)}
             onView={(item) => handleOpen('view', item)}
-            OnDelete={(id) => {
-              handleDelete(id);
-            }}
+            OnDelete={handleOpenDeleteModal}
           />
 
           <OffCanvas isOpen={isOffCanvasOpen} onClose={handleClose}>
@@ -145,7 +158,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
-                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add' ? addPlanet : updatePlanet,
                   mode === 'add'
                     ? 'Planeta agregado con éxito'
                     : 'Planeta actualizado con éxito',
@@ -188,11 +201,30 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 )}
               />
             )}
+            {module === 'characters' && (
+              <CharactersForm
+                mode={mode}
+                initialData={selectedItem}
+                onSubmit={handleSubmit(
+                  mode === 'add' ? addMovie : updateMovie,
+                  mode === 'add'
+                    ? 'Personaje agregado con éxito'
+                    : 'Personaje actualizado con éxito',
+                )}
+              />
+            )}
           </OffCanvas>
 
           {isModalOpen && (
             <ModalResult message={modalMessage} onClose={() => setIsModalOpen(false)} />
           )}
+
+          <ModalDelete
+            isOpen={isModalDeleteOpen}
+            itemName={itemToDelete}
+            onConfirm={handleConfirmDelete}
+            onClose={(value) => setIsModalDeleteOpen(!value)}
+          />
           <div className="flex justify-end">
             <Pagination
               itemsPerPage={setItemsPerPage}

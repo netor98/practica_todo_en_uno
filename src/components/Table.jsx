@@ -7,10 +7,6 @@ export default function Table({ columns, data, module, onView, onEdit, OnDelete 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
-  useEffect(() => {
-    console.log('module:', module);
-  }, [module]);
-
   return (
     <div className="flex flex-col">
       <table className="min-w-full mt-5">
@@ -56,9 +52,7 @@ export default function Table({ columns, data, module, onView, onEdit, OnDelete 
 
                   <button
                     onClick={() => {
-                      setIsModalOpen(true);
-                      setItemToDelete(item._id);
-                      // OnDelete(item._id);
+                      OnDelete(item._id);
                     }}
                     className="bg-gray-200 px-1 py-1 text-red-500 rounded-lg text-sm
                   hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
@@ -71,15 +65,6 @@ export default function Table({ columns, data, module, onView, onEdit, OnDelete 
           ))}
         </tbody>
       </table>
-      <ModalDelete
-        isOpen={isModalOpen}
-        itemName={itemToDelete}
-        onConfirm={() => {
-          OnDelete(itemToDelete);
-          setIsModalOpen(false);
-        }}
-        onClose={(value) => setIsModalOpen(!value)}
-      />
     </div>
   );
 }
