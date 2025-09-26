@@ -1,6 +1,6 @@
 export const addCharacter = async (character) => {
   try {
-    const response = await fetch('http://localhost:3000/api/characters', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export const addCharacter = async (character) => {
 
 export const deleteCharacter = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/characters/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -39,13 +39,16 @@ export const deleteCharacter = async (id) => {
 export const updateCharacter = async (character) => {
   const { _id } = character;
   try {
-    const response = await fetch(`http://localhost:3000/api/characters/${_id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/characters/${_id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(character),
       },
-      body: JSON.stringify(character),
-    });
+    );
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Error al actualizar el personaje');

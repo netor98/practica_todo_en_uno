@@ -1,6 +1,6 @@
 export const deleteSpecie = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/species/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/species/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -15,7 +15,7 @@ export const deleteSpecie = async (id) => {
 
 export const addSpecie = async (specie) => {
   try {
-    const response = await fetch('http://localhost:3000/api/species', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/species/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export const addSpecie = async (specie) => {
 export const updateSpecie = async (specie) => {
   const { _id } = specie;
   try {
-    const response = await fetch(`http://localhost:3000/api/species/${_id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/species/${_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -55,8 +55,7 @@ export const updateSpecie = async (specie) => {
 
 export const getSpeciesList = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/species/list');
-    console.log('getSpeciesList response:', response);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/species/list`);
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Error al obtener la lista de especies');

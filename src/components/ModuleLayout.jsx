@@ -32,7 +32,6 @@ import {
 } from '../modules/characters/CharacterService';
 
 export function ModuleLayout({ columns, title, apiEndpoint, module }) {
-  const api = 'http://localhost:3000';
   const [data, setData] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,7 +48,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
 
   const fechData = async () => {
     const response = await fetch(
-      `${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
+      `${import.meta.env.VITE_API_URL}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
     );
     const result = await response.json();
     setData(result.data || []);
@@ -138,7 +137,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let apiUrl = `${api}/${apiEndpoint}`;
+        let apiUrl = `${import.meta.env.VITE_API_URL}/${apiEndpoint}`;
 
         if (debouncedSearchTerm) {
           apiUrl += `/find?name=${debouncedSearchTerm}`;

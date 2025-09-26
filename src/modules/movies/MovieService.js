@@ -1,6 +1,6 @@
 export const addMovie = async (movie) => {
   try {
-    const response = await fetch('http://localhost:3000/api/movies', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/movies/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export const addMovie = async (movie) => {
 
 export const deleteMovie = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/movies/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/movies/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -36,7 +36,7 @@ export const deleteMovie = async (id) => {
 export const updateMovie = async (movie) => {
   const { _id } = movie;
   try {
-    const response = await fetch(`http://localhost:3000/api/movies/${_id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/movies/${_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const updateMovie = async (movie) => {
 
 export const getMoviesList = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/movies/list');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/movies/list`);
     console.log('getMoviesList response:', response);
     if (!response.ok) {
       const errorData = await response.json();

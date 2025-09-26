@@ -1,6 +1,6 @@
 export const addPlanet = async (planet) => {
   try {
-    const response = await fetch('http://localhost:3000/api/planets', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/planets/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export const addPlanet = async (planet) => {
 
 export const deletePlanet = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/planets/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/planets/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -36,7 +36,7 @@ export const deletePlanet = async (id) => {
 export const updatePlanet = async (planet) => {
   const { _id } = planet;
   try {
-    const response = await fetch(`http://localhost:3000/api/planets/${_id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/planets/${_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const updatePlanet = async (planet) => {
 
 export const getPlanetsList = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/planets/list');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/planets/list`);
     console.log('getPlanetsList response:', response);
     if (!response.ok) {
       const errorData = await response.json();

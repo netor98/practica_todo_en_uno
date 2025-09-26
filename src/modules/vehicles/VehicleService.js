@@ -1,6 +1,6 @@
 export const addVehicle = async (vehicle) => {
   try {
-    const response = await fetch('http://localhost:3000/api/vehicles', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/vehicles`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export const addVehicle = async (vehicle) => {
 
 export const deleteVehicle = async (id) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/vehicles/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/vehicles/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
@@ -36,7 +36,7 @@ export const deleteVehicle = async (id) => {
 export const updateVehicle = async (vehicle) => {
   const { _id } = vehicle;
   try {
-    const response = await fetch(`http://localhost:3000/api/vehicles/${_id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/vehicles/${_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -55,8 +55,7 @@ export const updateVehicle = async (vehicle) => {
 
 export const getVehiclesList = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/vehicles/list');
-    console.log('getVehiclesList response:', response);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/vehicles/list`);
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || 'Error al obtener la lista de vehículos');
