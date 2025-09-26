@@ -52,3 +52,17 @@ export const updatePlanet = async (planet) => {
     throw error;
   }
 };
+
+export const getPlanetsList = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/planets/list');
+    console.log('getPlanetsList response:', response);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al obtener la lista de planetas');
+    }
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

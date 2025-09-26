@@ -7,6 +7,8 @@ import { getMoviesList } from '../movies/MovieService';
 import { getVehiclesList } from '../vehicles/VehicleService';
 import { inputClasses } from '../InputClasses';
 import { getSpaceShipsList } from '../airships/SpaceShipService';
+import { getSpeciesList } from '../species/SpecieService';
+import { getPlanetsList } from '../planets/PlanetService';
 
 export const BLANK_CHARACTER = {
   name: '',
@@ -18,16 +20,31 @@ export const BLANK_CHARACTER = {
   height: '',
   mass: '',
   movies: [],
+  vehicles: [],
+  spaceships: [],
+  specie: '',
+  native_planet: '',
 };
-export default function CharactersForm({ onSubmit, initialData = {}, mode = 'view' }) {
+export default function CharactersForm({
+  onSubmit,
+  initialData = {},
+  mode = 'view',
+  onClose,
+}) {
   const [movies, setMovies] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [spaceships, setSpaceships] = useState([]);
+  const [species, setSpecies] = useState([]);
+  const [planets, setPlanets] = useState([]);
 
   const getData = async () => {
     const moviesList = await getMoviesList();
     const vehiclesList = await getVehiclesList();
     const spaceshipsList = await getSpaceShipsList();
+    const speciesList = await getSpeciesList();
+    const planetsList = await getPlanetsList();
+    setPlanets(planetsList);
+    setSpecies(speciesList);
     setMovies(moviesList);
     setVehicles(vehiclesList);
     setSpaceships(spaceshipsList);
@@ -49,6 +66,8 @@ export default function CharactersForm({ onSubmit, initialData = {}, mode = 'vie
     movies: Yup.array(),
     spaceships: Yup.array(),
     vehicles: Yup.array(),
+    native_planet: Yup.string(),
+    specie: Yup.string(),
   });
 
   return (
@@ -59,6 +78,8 @@ export default function CharactersForm({ onSubmit, initialData = {}, mode = 'vie
         movies: initialData.movies?.map((movie) => movie._id) || [],
         spaceships: initialData.spaceships || [],
         vehicles: initialData.vehicles || [],
+        native_planet: initialData.native_planet?._id || '',
+        specie: initialData.specie?._id || '',
       }}
       enableReinitialize
       onSubmit={onSubmit}
@@ -198,6 +219,62 @@ export default function CharactersForm({ onSubmit, initialData = {}, mode = 'vie
               </Field>
             )}
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Especie</label>
+            {mode === 'view' ? (
+              <input
+                type="text"
+                value={
+                  species.find((p) => p.id === initialData.specie?._id)?.name || 'unknown'
+                }
+                className={inputClasses}
+                disabled
+              />
+            ) : (
+              <Field
+                as="select"
+                name="specie"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+              >
+                <option value="">Selecciona una especie</option>
+                {species.map((specie) => (
+                  <option key={specie.id} value={specie.id}>
+                    {specie.name}
+                  </option>
+                ))}
+              </Field>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Planeta Nativo
+            </label>
+            {mode === 'view' ? (
+              <input
+                type="text"
+                value={
+                  planets.find((p) => p.id === initialData.native_planet?._id)?.name ||
+                  'unknown'
+                }
+                className={inputClasses}
+                disabled
+              />
+            ) : (
+              <Field
+                as="select"
+                name="native_planet"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+              >
+                <option value="">Selecciona un planeta</option>
+                {planets.map((planet) => (
+                  <option key={planet.id} value={planet.id}>
+                    {planet.name}
+                  </option>
+                ))}
+              </Field>
+            )}
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Vehicles</label>
             {mode === 'view' ? (
@@ -255,6 +332,15 @@ export default function CharactersForm({ onSubmit, initialData = {}, mode = 'vie
             )}
           </div>
           <div className="flex justify-end">
+            {mode == 'view' && (
+              <button
+                type="button"
+                onClick={() => onClose()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+            )}
             {mode !== 'view' && (
               <button
                 type="submit"

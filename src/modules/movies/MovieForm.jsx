@@ -10,7 +10,12 @@ export const BLANK_MOVIE = {
   producer: '',
 };
 
-export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' }) {
+export default function MovieForm({
+  onSubmit,
+  initialData = {},
+  mode = 'view',
+  onClose,
+}) {
   const MovieSchema = Yup.object().shape({
     title: Yup.string().required('El título es obligatorio'),
     director: Yup.string().required('El director es obligatorio'),
@@ -87,6 +92,15 @@ export default function MovieForm({ onSubmit, initialData = {}, mode = 'view' })
             />
           </div>
           <div className="flex justify-end">
+            {mode == 'view' && (
+              <button
+                type="button"
+                onClick={() => onClose()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+            )}
             {mode !== 'view' && (
               <button
                 type="submit"

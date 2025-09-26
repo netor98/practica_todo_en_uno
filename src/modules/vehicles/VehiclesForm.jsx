@@ -14,7 +14,12 @@ export const BLANK_VEHICLE = {
   max_time_consumable: '',
 };
 
-export default function VehiclesForm({ onSubmit, initialData = {}, mode = 'view' }) {
+export default function VehiclesForm({
+  onSubmit,
+  initialData = {},
+  mode = 'view',
+  onClose,
+}) {
   const VehicleSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
     model: Yup.string().required('El model es obligatorio'),
@@ -141,6 +146,15 @@ export default function VehiclesForm({ onSubmit, initialData = {}, mode = 'view'
             />
           </div>
           <div className="flex justify-end">
+            {mode == 'view' && (
+              <button
+                type="button"
+                onClick={() => onClose()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+            )}
             {mode !== 'view' && (
               <button
                 type="submit"

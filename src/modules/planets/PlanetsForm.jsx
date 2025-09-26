@@ -16,7 +16,12 @@ export const BLANK_PLANET = {
   surface_water: '',
 };
 
-export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' }) {
+export default function PlanetsForm({
+  onSubmit,
+  initialData = {},
+  mode = 'view',
+  onClose,
+}) {
   const PlanetSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
     gravity: Yup.string(),
@@ -150,6 +155,15 @@ export default function PlanetsForm({ onSubmit, initialData = {}, mode = 'view' 
             />
           </div>
           <div className="flex justify-end">
+            {mode == 'view' && (
+              <button
+                type="button"
+                onClick={() => onClose()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+            )}
             {mode !== 'view' && (
               <button
                 type="submit"

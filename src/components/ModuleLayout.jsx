@@ -65,22 +65,6 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // useEffect(() => {
-  //   let apiUrl = `${api}/${apiEndpoint}/find`;
-  //   if (debouncedSearchTerm) {
-  //     apiUrl += `?name=${debouncedSearchTerm}`;
-  //
-  //     fetch(apiUrl)
-  //       .then((res) => res.json())
-  //       .then((result) => {
-  //         setData(result.data || [] || result);
-  //         setTotalItems(result.length || result.itemsCount || 0);
-  //       });
-  //   } else {
-  //     fechData();
-  //   }
-  // }, [debouncedSearchTerm]);
-
   const handleOpen = (mode, item = {}) => {
     setMode(mode);
     if (mode !== 'add') {
@@ -158,6 +142,8 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
 
         if (debouncedSearchTerm) {
           apiUrl += `/find?name=${debouncedSearchTerm}`;
+          setCurrentPage(1);
+
           apiUrl += `&limit=${itemsPerPage}&page=${currentPage}`;
         } else {
           apiUrl += `?limit=${itemsPerPage}&page=${currentPage}`;
@@ -221,6 +207,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
                 mode={mode}
                 key={selectedItem ? selectedItem.id : 'new'}
                 initialData={selectedItem}
+                onClose={handleClose}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addMovie : updateMovie,
                   mode === 'add'
@@ -232,6 +219,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             {module === 'planets' && (
               <PlanetsForm
                 mode={mode}
+                onClose={handleClose}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addPlanet : updatePlanet,
@@ -245,6 +233,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
               <SpeciesForm
                 mode={mode}
                 initialData={selectedItem}
+                onClose={handleClose}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addSpecie : updateSpecie,
                   mode === 'add'
@@ -256,6 +245,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             {module === 'vehicles' && (
               <VehiclesForm
                 mode={mode}
+                onClose={handleClose}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addVehicle : updateVehicle,
@@ -268,6 +258,7 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             {module === 'spaceships' && (
               <SpaceShipsForm
                 mode={mode}
+                onClose={handleClose}
                 initialData={selectedItem}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addSpaceShip : updateSpaceShip,
@@ -279,8 +270,10 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             )}
             {module === 'characters' && (
               <CharactersForm
+                onClose={handleClose}
                 mode={mode}
                 initialData={selectedItem}
+                key={selectedItem ? selectedItem.id : 'new'}
                 onSubmit={handleSubmit(
                   mode === 'add' ? addCharacter : updateCharacter,
                   mode === 'add'

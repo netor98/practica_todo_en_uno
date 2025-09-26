@@ -4,6 +4,7 @@ import { ErrorMessage } from 'formik';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { inputClasses } from '../InputClasses';
+import { getPlanetsList } from '../planets/PlanetService';
 
 export const BLANK_SPECIE = {
   name: '',
@@ -17,14 +18,17 @@ export const BLANK_SPECIE = {
   language: '',
   native_planet: '',
 };
-export default function SpeciesForm({ onSubmit, initialData = {}, mode = 'view' }) {
+export default function SpeciesForm({
+  onSubmit,
+  initialData = {},
+  mode = 'view',
+  onClose,
+}) {
   const [planets, setPlanets] = useState([]);
-  const api = 'http://localhost:3000/api';
 
   const fetchPlanets = async () => {
-    const response = await fetch(`${api}/planets/list`);
-    const result = await response.json();
-    setPlanets(result);
+    const response = await getPlanetsList();
+    setPlanets(response);
   };
   useEffect(() => {
     fetchPlanets();
@@ -192,6 +196,15 @@ export default function SpeciesForm({ onSubmit, initialData = {}, mode = 'view' 
             )}
           </div>
           <div className="flex justify-end">
+            {mode === 'view' && (
+              <button
+                type="button"
+                onClick={() => onClose()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-gray-700"
+              >
+                Volver
+              </button>
+            )}
             {mode !== 'view' && (
               <button
                 type="submit"
