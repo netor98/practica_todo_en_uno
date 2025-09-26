@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-export default function Searcher({}) {
+export default function Searcher({ value, onChange }) {
   return (
     <div className="flex justify-end items-center mt-5">
       <div
@@ -10,6 +10,8 @@ export default function Searcher({}) {
         <input
           type="text"
           placeholder="Busqueda"
+          value={value}
+          onChange={onChange}
           className=" py-2 w-auto focus:outline-none "
         />
       </div>

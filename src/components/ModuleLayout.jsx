@@ -44,15 +44,42 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   const fechData = async () => {
     const response = await fetch(
       `${api}/${apiEndpoint}?limit=${itemsPerPage}&page=${currentPage}`,
     );
     const result = await response.json();
-    setData(result.data);
+    setData(result.data || []);
     setTotalItems(result.itemsCount);
+    setSearchTerm('');
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // useEffect(() => {
+  //   let apiUrl = `${api}/${apiEndpoint}/find`;
+  //   if (debouncedSearchTerm) {
+  //     apiUrl += `?name=${debouncedSearchTerm}`;
+  //
+  //     fetch(apiUrl)
+  //       .then((res) => res.json())
+  //       .then((result) => {
+  //         setData(result.data || [] || result);
+  //         setTotalItems(result.length || result.itemsCount || 0);
+  //       });
+  //   } else {
+  //     fechData();
+  //   }
+  // }, [debouncedSearchTerm]);
 
   const handleOpen = (mode, item = {}) => {
     setMode(mode);
@@ -95,7 +122,6 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   };
 
   const handleConfirmDelete = async () => {
-    console.log('Deleting item:', itemToDelete);
     if (!itemToDelete) return;
 
     const deleteFunction = {
@@ -126,8 +152,30 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
   }, [itemsPerPage, totalItems]);
 
   useEffect(() => {
-    fechData();
-  }, [itemsPerPage, currentPage, apiEndpoint]);
+    const fetchData = async () => {
+      try {
+        let apiUrl = `${api}/${apiEndpoint}`;
+
+        if (debouncedSearchTerm) {
+          apiUrl += `/find?name=${debouncedSearchTerm}`;
+          apiUrl += `&limit=${itemsPerPage}&page=${currentPage}`;
+        } else {
+          apiUrl += `?limit=${itemsPerPage}&page=${currentPage}`;
+        }
+
+        const response = await fetch(apiUrl);
+        const result = await response.json();
+
+        setData(result.data || []);
+        setTotalItems(result.itemsCount || 0);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setData([]);
+      }
+    };
+
+    fetchData();
+  }, [debouncedSearchTerm, currentPage, itemsPerPage, apiEndpoint]);
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -151,7 +199,12 @@ export function ModuleLayout({ columns, title, apiEndpoint, module }) {
             </button>
           </div>
 
-          <Searcher />
+          {module === 'characters' && (
+            <Searcher
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          )}
           <Table
             columns={columns}
             data={data}
